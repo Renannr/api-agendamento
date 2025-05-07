@@ -1,48 +1,69 @@
-import { Agendamento } from '../models/agendamento';
-import { isSameDay } from "date-fns";
+import { differenceInDays } from "date-fns";
+import { Agendamento, Status } from '../models/agendamento';
 
-var agendamentos: Agendamento[] = [];
+export var agendamentos: Agendamento[] = [];
 
 export const criarAgendamento = (novoAgendamento: Agendamento): Agendamento => {
-	// TODO
-};
+	const agendamento: Agendamento = novoAgendamento
 
-export const alterarStatus = (id, novoStatus: Status): Agendamento => {
-	// TODO
-};
-
-export const listarAgendamentos = (d, s, m): Agendamento[] => {
-	return agendamentos.filter((a) => {
-		var corresponde = true;
-
-		if (d) {
-			corresponde = corresponde && isSameDay(a.dataHora, d);
-		} else if (s) {
-			corresponde = corresponde && a.status === s;
-		} else if (m) {
-			corresponde = corresponde && a.motoristaCpf === m;
+	const conflitoStatus = agendamentos.filter(item => item.motoristaCpf === agendamento.motoristaCpf);
+	if (conflitoStatus.length > 0) {
+		let conflito = agendamentos.find(item => item.status === 'pendente' || item.status === 'atrasado')
+		if (conflito) {
+			throw new Error("Conflito de agendamento");
 		}
+	}
 
-		return corresponde;
+	const conflitoHorario = agendamentos.find(item => item.dataHora === agendamento.dataHora)
+	if (conflitoHorario) {
+		throw new Error("Conflito de agendamento");
+	}
+
+	agendamentos.push(agendamento);
+	return agendamento;
+};
+
+export const alterarStatus = (id: string, novoStatus: Status): Agendamento => {
+	const agendamento = agendamentos.find(item => item.id === id);
+
+	if (!agendamento) {
+		throw new Error('Agendamento não encontrado');
+	}
+
+	if (agendamento.status === "cancelado") {
+		throw new Error('Não é possível alterar um agendamento cancelado');
+	}
+
+	if (agendamento.status === 'concluido' && novoStatus === 'cancelado') {
+		throw new Error('Não é possível cancelar um agendamento já concluído');
+	}
+
+	agendamento.status = novoStatus
+	return agendamento;
+};
+
+export const listarAgendamentos = (data?: Date, status?: string, motoristaCpf?: string): Agendamento[] => {
+	return agendamentos.filter((item) => {
+		let mesmaData = true;
+
+		if (data) {
+			const dataItem = new Date(item.dataHora);
+			const dataFiltro = new Date(data);
+			mesmaData =
+				dataItem.getUTCFullYear() === dataFiltro.getUTCFullYear() &&
+				dataItem.getUTCMonth() === dataFiltro.getUTCMonth() &&
+				dataItem.getUTCDate() === dataFiltro.getUTCDate();
+		}
+		const mesmoStatus = status ? item.status === status : true;
+		const mesmoCpf = motoristaCpf ? item.motoristaCpf === motoristaCpf : true;
+
+		return mesmaData && mesmoStatus && mesmoCpf;
 	});
 };
 
 export const removerAgendamentosAntigos = (): void => {
-	var temp: Agendamento[] = [];
-
-	agendamentos.map((a) => {
-		const diasDeDiferenca = differenceInDays(new Date(), a.dataHora);
-
-		if (diasDeDiferenca <= 3) {
-			for (let i = 0; i < agendamentos.length; i++) {
-				const e = agendamentos[i];
-
-				if (e.id === a.id) {
-					temp[i] = e;
-				}
-			}
-		}
+	agendamentos = agendamentos.filter((agendamento) => {
+		const diasDeDiferenca = differenceInDays(new Date(), agendamento.dataHora);
+		return diasDeDiferenca <= 3;
 	});
-
-	agendamentos = temp;	
 };
