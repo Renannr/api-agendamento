@@ -1,16 +1,18 @@
-import {
-	criarAgendamento,
-	alterarStatus,
-	listarAgendamentos,
-	removerAgendamentosAntigos,
-} from "../services/agendamentoService";
-import { Agendamento } from "../models/agendamento";
 import { addDays } from "date-fns";
+import { Agendamento } from "../models/agendamento";
+import {
+	agendamentos,
+	alterarStatus,
+	criarAgendamento,
+	listarAgendamentos,
+	removerAgendamentosAntigos
+} from "../services/agendamentoService";
 
 describe("Agendamento Service", () => {
 	let agendamento: Agendamento;
 
 	beforeEach(() => {
+		agendamentos.length = 0
 		agendamento = {
 			id: "1",
 			motoristaNome: "João",
@@ -76,6 +78,7 @@ describe("Agendamento Service - Filtros", () => {
 	let agendamento3: Agendamento;
 
 	beforeEach(() => {
+		agendamentos.length = 0
 		agendamento1 = {
 			id: "1",
 			motoristaNome: "João",
@@ -83,7 +86,7 @@ describe("Agendamento Service - Filtros", () => {
 			placaCaminhao: "ABC-1234",
 			numeroContrato: "CT123",
 			dataHora: new Date("2024-09-15T10:00:00Z"),
-			status: "pendente",
+			status: "cancelado",
 		};
 
 		agendamento2 = {
@@ -123,9 +126,9 @@ describe("Agendamento Service - Filtros", () => {
 	});
 
 	it("Deve filtrar agendamentos por status", () => {
-		const agendamentosPendente = listarAgendamentos(undefined, "pendente");
+		const agendamentosPendente = listarAgendamentos(undefined, "cancelado");
 		expect(agendamentosPendente.length).toBe(1);
-		expect(agendamentosPendente[0].status).toBe("pendente");
+		expect(agendamentosPendente[0].status).toBe("cancelado");
 
 		const agendamentosConcluido = listarAgendamentos(undefined, "concluido");
 		expect(agendamentosConcluido.length).toBe(1);
@@ -160,6 +163,7 @@ describe("Agendamento Service - Remover Agendamentos Antigos", () => {
 	let agendamento3: Agendamento;
 
 	beforeEach(() => {
+		agendamentos.length = 0
 		agendamento1 = {
 			id: "1",
 			motoristaNome: "João",
