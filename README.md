@@ -60,11 +60,11 @@ A API fornece uma rota para excluir todos os agendamentos que possuem mais de 3 
 
   ```json
   {
-  	"dataHora": "2024-09-15T10:00:00Z",
-  	"numeroContrato": "CT123",
-  	"motoristaNome": "João",
-  	"motoristaCpf": "12345678900",
-  	"placaCaminhao": "ABC-1234"
+    "dataHora": "2024-09-15T10:00:00Z",
+    "numeroContrato": "CT123",
+    "motoristaNome": "João",
+    "motoristaCpf": "12345678900",
+    "placaCaminhao": "ABC-1234"
   }
   ```
 
@@ -76,7 +76,7 @@ A API fornece uma rota para excluir todos os agendamentos que possuem mais de 3 
 
   ```json
   {
-  	"status": "concluido"
+    "status": "concluido"
   }
   ```
 
@@ -106,7 +106,7 @@ A API fornece uma rota para excluir todos os agendamentos que possuem mais de 3 
 
   ```json
   {
-  	"message": "Agendamentos com mais de 3 dias foram removidos"
+    "message": "Agendamentos com mais de 3 dias foram removidos"
   }
   ```
 
@@ -120,22 +120,30 @@ A API fornece uma rota para excluir todos os agendamentos que possuem mais de 3 
 ### Instalação
 
 1. Clone o repositório:
-   ```bash
-   git clone git@github.com:Renannr/api-agendamento.git
-   ```
+
+```bash
+git clone https://github.com/Renannr/api-agendamento.git
+```
+
 2. Instale as dependências:
-   ```bash
-   yarn install
-   ```
+
+```bash
+yarn install
+```
+
 3. Inicie o servidor de desenvolvimento:
-   ```bash
-   yarn start
-   ```
+
+```bash
+yarn start
+```
+
 4. Execute os testes:
-   `bash
-	yarn test
-	`
-   A API estará disponível em http://localhost:3000.
+
+```bash
+yarn test
+```
+
+A API estará disponível em http://localhost:3000.
 
 ## Executando Testes Unitários
 
